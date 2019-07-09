@@ -8,6 +8,7 @@ This is the third project in Udacity's full stack developer course.This project 
 
 ### The application can accesible in the following links
 - http://13.235.0.153/
+- http://ec2-13-235-0-153.ap-south-1.compute.amazonaws.com/
 - http://13.235.0.153.xip.io (This DNS name is required to add oauth to our application since google cannot accept IP address only for authentication. logging in to the application requires googles authntication of client secrets. Visit [this link](http://xip.io) for more info about xip.io)
 
 ## Get Started
@@ -32,6 +33,28 @@ To complete this project, you'll need a Linux server instance. We recommend usin
 - Run `sudo apt-get update` to update packages.
 - Run `sudo apt-get upgrade` to install new versions of packages, If available.
 - check for future updates: `sudo apt-get dist-upgrade`.
+
+### Automatically Install Updates
+  (Added after first Review)
+- The unattended-upgrades package can be used to automatically install important system updates.
+
+- Enable automatic (security) updates: sudo apt-get install unattended-upgrades.
+- Edit /etc/apt/apt.conf.d/50unattended-upgrades, uncomment the line ${distro_id}:${distro_codename}-updates and save it.
+- Modify /etc/apt/apt.conf.d/20auto-upgrades file so that the upgrades are downloaded and installed every day:
+```
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Download-Upgradeable-Packages "1";
+APT::Periodic::AutocleanInterval "7";
+APT::Periodic::Unattended-Upgrade "1";
+Enable it: sudo dpkg-reconfigure --priority=low unattended-upgrades.
+```
+- Restart Apache: sudo service apache2 restart.
+
+### References:
+
+- [automate unattended-upgrades process updates](https://help.ubuntu.com/lts/serverguide/automatic-updates.html)
+- If message persists, [this link](https://serverfault.com/questions/262751/update-ubuntu-10-04/262773#262773)
+
 
 ### Change the SSH port from 22 to 2200
 - In project requirements, it is metioned to change the ssh port from `22` to `2200`.
@@ -153,6 +176,19 @@ To complete this project, you'll need a Linux server instance. We recommend usin
 - While logged in as `catalog`, create a database: `createdb catalog`.
 - Exit psql: `\q`.
 - Switch back to the `grader` user: `exit`.
+
+### Disabling RootLogin
+  (Added after first Review)
+- It sugguested to prohit RootLogin as such the password can be brute forced.
+- After lloged in to machine by root do :`sudo nano /etc/ssh/sshd_config`.
+- Find the line PermitRootLogin  and change it to PermitRootLogin no.
+- Restart the SSH server: `service ssh restart`.
+- Terminate the connection: `exit`.
+- After you are back to the host machine, and try logging in as root.The output should be as follows.
+```
+$ ssh  root@13.235.0.153 -p 2200
+root@13.235.0.153: Permission denied (publickey).
+```
 
 ### Install git
 - Run `$ sudo apt-get install git`
